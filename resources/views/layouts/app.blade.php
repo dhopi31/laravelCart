@@ -30,16 +30,19 @@
                 <a class="navbar-brand" href="{{ url('/') }}">
                         HOME
                     </a>
-                    <a class="navbar-brand" href="product">
+                    <a class="navbar-brand" href="/product">
                         PRODUCT
                     </a>
-                    <a class="navbar-brand" href="cart">
+                    <a class="navbar-brand" href="/cart">
                         CART (REFRESH)
                     </a>
-                    <a class="navbar-brand" href="cart-live">
+                    <a class="navbar-brand" href="/cart-live">
                         CART (LIVE)
                     </a>
-                    <a href="cart" rel="noopener noreferrer" style="text-decoration: none"> 
+                    <a class="navbar-brand" href="/report">
+                            REPORT
+                    </a>
+                    <a href="/cart" rel="noopener noreferrer" style="text-decoration: none"> 
                         <i class="fa fa-shopping-cart"></i>
                         <span class="badge badge-pill badge-danger">
                         {{ count((array) session('cart')) }}</span>
@@ -73,7 +76,7 @@
                             @else
                             <li class="nav-item dropdown">
                                 <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-                                    {{ Auth::user()->name }}
+                                    {{ ucfirst(Auth::user()->name) }}
                                 </a>
 
                                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">

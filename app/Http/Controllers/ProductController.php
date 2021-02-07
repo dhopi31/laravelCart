@@ -8,6 +8,8 @@ use App\Models\Transaction_detail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\DB;
+
 
 class ProductController extends Controller
 {
@@ -17,17 +19,8 @@ class ProductController extends Controller
         $product = Product::all();
         return view('product.index', compact('product'));
     }
+
     
-    public function cart()
-    {
-        return view('product.cart');
-    }
-
-    public function cartLive()
-    {
-        return view('product.cartLive');
-    }
-
     public function addToCart($id)
     {
         $product = Product::find($id);
@@ -36,61 +29,49 @@ class ProductController extends Controller
         }
 
         $cart = session()->get('cart');
-
+        
         if(!$cart) {
             $cart = [
-                    $id => [
+                $id => [
                         "name" => $product->name,
                         "quantity" => 1,
                         "price" => $product->price,
                         "photo" => $product->photo
-                    ]
-            ];
-            session()->put('cart', $cart);
+                        ]
+                    ];
+                    session()->put('cart', $cart);
             return redirect()->back()->with('success', 'Product added to cart successfully!');
         }
-
+        
         if(isset($cart[$id])) {
             $cart[$id]['quantity']++;
             session()->put('cart', $cart);
             return redirect()->back()->with('success', 'The Same Product added to cart successfully!');
         }
-
-         // if item not exist in cart then add to cart with quantity = 1
-         $cart[$id] = [
+        
+        // if item not exist in cart then add to cart with quantity = 1
+        $cart[$id] = [
             "name" => $product->name,
             "quantity" => 1,
             "price" => $product->price,
             "photo" => $product->photo
         ];
-
+        
         session()->put('cart', $cart);
         return redirect()->back()->with('success', 'Product added to cart successfully!');
     }
-
-    public function update(Request $request)
+    
+    public function cart()
     {
-        if($request->id and $request->quantity)
-        {
-            $cart = session()->get('cart');
-            $cart[$request->id]["quantity"] = $request->quantity;
-            session()->put('cart', $cart);
-            session()->flash('success', 'Cart updated successfully');
-        }
+        return view('product.cart');
+    }
+    
+    public function cartLive()
+    {
+        return view('product.cartLive');
     }
 
-    public function remove(Request $request)
-    {
-        if($request->id) {
-            $cart = session()->get('cart');
-            if(isset($cart[$request->id])) {
-                unset($cart[$request->id]);
-                session()->put('cart', $cart);
-            }
-            session()->flash('success', 'Product removed successfully');
-        }
-    }
-
+    
     public function checkOut(Request $request)
     {   
         $jml_item = count($request->item_code);
@@ -126,6 +107,42 @@ class ProductController extends Controller
         }
         session()->flash('success', 'Product confirm successfully');
         return redirect('/product');
+    }
+    
+    public function detailProduct($id)
+    {
+        $product = Product::find($id);
+        return view('product.detail', compact('product'));
+    }
+
+    public function report(){
+
+        $detail = Transaction_header::with('transaction_detail.item_name')->get();
+        
+        return view('product.report', compact('detail'));
+    }
+
+    public function remove(Request $request)
+    {
+        if($request->id) {
+            $cart = session()->get('cart');
+            if(isset($cart[$request->id])) {
+                unset($cart[$request->id]);
+                session()->put('cart', $cart);
+            }
+            session()->flash('success', 'Product removed successfully');
+        }
+    }
+
+    public function update(Request $request)
+    {
+        if($request->id and $request->quantity)
+        {
+            $cart = session()->get('cart');
+            $cart[$request->id]["quantity"] = $request->quantity;
+            session()->put('cart', $cart);
+            session()->flash('success', 'Cart updated successfully');
+        }
     }
 
 }

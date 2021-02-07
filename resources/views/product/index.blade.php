@@ -20,8 +20,14 @@
                     <div class="card-body">
                         <h5 class="card-title">{{ $list_product->name }}</h5>
                         <p class="card-text"> {{ \Illuminate\Support\Str::limit(strtolower($list_product->description), 50, $end='...') }}</p>
-                        <p><strong>Price: </strong> {{ $list_product->price }} $</p>
-                        <p class="btn-holder" ><a href="{{ url('add-to-cart/'.$list_product->id) }}" class="btn btn-primary btn-block text-center" role="button">Add to cart</a> </p>
+                        @if ($list_product->disc==0)
+                            <p><strong>Price: </strong>Rp. {{ $list_product->price }} </p>
+                        @else
+                            <p class="text-muted" style="text-decoration: line-through;"><strong>Price: </strong> Rp. {{ $list_product->price }} </p>
+                            <p><strong>Price: </strong>Rp. {{ $list_product->price - ($list_product->price * $list_product->disc/100) }} </p>
+                        @endif
+                            <p class="btn-holder" ><a href="{{ url('add-to-cart/'.$list_product->id) }}" class="btn btn-primary text-center" role="button">Buy</a>
+                            <a href="{{ url('detail/'.$list_product->id) }}" class="btn btn-danger  text-right" role="button">Detail</a> </p>
                     </div>
                 </div>
                 </div>
