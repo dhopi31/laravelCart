@@ -17,9 +17,12 @@
             @if(session('cart'))
             
             @foreach(session('cart') as $id => $details)
-            
-            <?php $total += $details['price'] * $details['quantity'] ?>
-            
+            @if ($details['disc']==0)
+                <?php $total += $details['price'] * $details['quantity'] ?>
+            @else
+                <?php $total += ($details['price'] - ($details['price'] * $details['disc']/100)) * $details['quantity'] ?>
+            @endif
+
             <tr>    
                 <form action="check-out" method="POST">                   
                     <td data-th="Product">
@@ -34,7 +37,11 @@
                     </td>
 
                     <td data-th="Price">
-                        ${{ $details['price'] }}
+                        @if ($details['disc']==0)
+                            Rp. {{ $details['price'] }}
+                        @else
+                            Rp. {{ $details['price'] - ($details['price'] * $details['disc']/100) }}
+                        @endif
                     </td>
 
                     <td data-th="Quantity">
@@ -42,7 +49,11 @@
                     </td>
                     
                     <td data-th="Subtotal" class="text-center">
-                        ${{ $details['price'] * $details['quantity'] }}
+                        @if ($details['disc']==0)
+                            Rp. {{ $details['price'] * $details['quantity'] }}
+                        @else
+                            Rp. {{ ($details['price'] - ($details['price'] * $details['disc']/100)) * $details['quantity'] }}
+                        @endif    
                     </td>
                     
                     <td class="actions" data-th="">
@@ -68,7 +79,7 @@
                         
                     </td>
                     <td class="hidden-xs text-center"><strong>
-                        Total $ {{ $total }}</strong>
+                        Total Rp. {{ $total }}</strong>
                     </td>
                 </tr>
                 @method('POST')

@@ -19,9 +19,12 @@
             <?php  $j = count(session('cart')) ?>
             @foreach(session('cart') as $id => $details)
             
-            <?php 
-                $total += $details['price'] * $details['quantity']   
-            ?>
+            @if ($details['disc']==0)
+                <?php $total += $details['price'] * $details['quantity'] ?>
+            @else
+                <?php $total += ($details['price'] - ($details['price'] * $details['disc']/100)) * $details['quantity'] ?>
+            @endif
+
             
             <tr>    
                 <form action="check-out" method="POST">
@@ -39,8 +42,13 @@
                     </td>
 
                     <td data-th="Price">
-                        ${{ $details['price'] }}
-                        <input type="hidden"   id="price{{$loop->iteration}}" value="{{ $details['price'] }}" class="form-control quantity"  />
+                        @if ($details['disc']==0)
+                            Rp. {{ $details['price'] }}
+                            <input type="hidden"   id="price{{$loop->iteration}}" value="{{ $details['price'] }}" class="form-control quantity"  />
+                        @else
+                            <input type="hidden"   id="price{{$loop->iteration}}" value="{{ $details['price'] - ($details['price'] * $details['disc']/100) }}" class="form-control quantity"  />
+                            Rp. {{ $details['price'] - ($details['price'] * $details['disc']/100) }}
+                        @endif
                     </td>
 
                     <td data-th="Quantity">
@@ -49,7 +57,11 @@
                     </td>
 
                     <td data-th="Subtotal" class="text-center">
-                        <input type="text" class="qty form-control" readonly  id="tot{{$loop->iteration}}"   value="{{ $details['price'] * $details['quantity'] }}"> 
+                        @if ($details['disc']==0)
+                            <input type="text" class="qty form-control" readonly  id="tot{{$loop->iteration}}"   value="{{ $details['price'] * $details['quantity'] }}"> 
+                        @else
+                            <input type="text" class="qty form-control" readonly  id="tot{{$loop->iteration}}"   value="{{ ($details['price'] - ($details['price'] * $details['disc']/100)) * $details['quantity'] }}">  
+                        @endif
                     </td>
 
                     <td class="actions" data-th="">

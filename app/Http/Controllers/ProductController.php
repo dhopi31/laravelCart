@@ -36,6 +36,7 @@ class ProductController extends Controller
                         "name" => $product->name,
                         "quantity" => 1,
                         "price" => $product->price,
+                        "disc" => $product->disc,
                         "photo" => $product->photo
                         ]
                     ];
@@ -54,6 +55,7 @@ class ProductController extends Controller
             "name" => $product->name,
             "quantity" => 1,
             "price" => $product->price,
+            "disc" => $product->disc,
             "photo" => $product->photo
         ];
         
